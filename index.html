@@ -249,6 +249,19 @@
   .tracklist .tr{display:flex;justify-content:space-between;padding:11px 4px;border-bottom:1px solid var(--line-soft);font-size:14px;cursor:pointer;transition:.2s}
   .tracklist .tr:last-child{border-bottom:none}.tracklist .tr:hover{color:var(--accent);padding-left:6px}
   .tracklist .tr .dur{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft)}
+  .player .art{background-size:cover;background-position:center}
+  .player .art::after{display:none}
+  .scrub{position:relative;height:5px;background:var(--line);border-radius:3px;margin-top:11px;cursor:pointer;box-shadow:inset 0 1px 1px rgba(0,0,0,.2)}
+  .scrub .fill{height:100%;width:0;background:var(--accent);border-radius:3px}
+  .scrub .knob{position:absolute;top:50%;left:0;width:11px;height:11px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .times{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);margin-top:5px}
+  .trl{display:flex;align-items:center;gap:12px}
+  .trcover{display:inline-block;width:36px;height:36px;border-radius:6px;background-size:cover;background-position:center;background-color:var(--metal-3);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);flex:none}
+  .tracklist .tr{align-items:center}
+  .pcontrols .mute{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);transition:.2s;padding:0}
+  .pcontrols .mute:hover{border-color:var(--accent);color:var(--accent)}
+  .tracklist .tr.active{color:var(--accent)}
+  .tracklist .tr.active .trcover{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 2px var(--accent)}
 </style>
 </head>
 <body>
@@ -280,6 +293,7 @@
     </div>
   </div>
   <div class="lightbox" id="lightbox"><div class="big" id="lbimg"></div></div>
+  <audio id="audioEl" preload="metadata"></audio>
 
 <script>
   const G={range:'linear-gradient(135deg,#8a8276,#3f3a33)',push:'linear-gradient(135deg,#6e7479,#2c3035)',
