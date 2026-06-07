@@ -225,6 +225,7 @@
   .vsco-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-soft)}
   .vsco-head a{color:var(--accent);text-decoration:none}
   .vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+  .vwrap{min-height:100%;display:flex;flex-direction:column;justify-content:center}
   .vph{aspect-ratio:1;background-position:center;background-size:cover;border-radius:3px;cursor:pointer;transition:opacity .2s;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06)}
   .vph:hover{opacity:.82}
   .photonote{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:14px}
@@ -253,13 +254,18 @@
   .player .art::after{display:none}
   .scrub{position:relative;height:5px;background:var(--line);border-radius:3px;margin-top:11px;cursor:pointer;box-shadow:inset 0 1px 1px rgba(0,0,0,.2)}
   .scrub .fill{height:100%;width:0;background:var(--accent);border-radius:3px}
-  .scrub .knob{position:absolute;top:50%;left:0;width:11px;height:11px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 1px 3px rgba(0,0,0,.4)}
+  .scrub .knob{position:absolute;top:50%;left:0;width:11px;height:11px;border-radius:50%;background:var(--accent);transform:translate(-50%,-50%);box-shadow:0 1px 3px rgba(0,0,0,.4);opacity:0;transition:opacity .15s}
+  .scrub:hover .knob,.scrub.dragging .knob{opacity:1}
+  .scrub-tip{position:absolute;bottom:14px;left:0;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:4px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .scrub:hover .scrub-tip,.scrub.dragging .scrub-tip{opacity:1}
   .times{display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-soft);margin-top:5px}
   .trl{display:flex;align-items:center;gap:12px}
   .trcover{display:inline-block;width:36px;height:36px;border-radius:6px;background-size:cover;background-position:center;background-color:var(--metal-3);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);flex:none}
   .tracklist .tr{align-items:center}
   .pcontrols .mute{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--paper);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);transition:.2s;padding:0}
   .pcontrols .mute:hover{border-color:var(--accent);color:var(--accent)}
+  .pcontrols .mute.muted{border-color:var(--accent);color:var(--accent)}
+  .pcontrols .mute{margin-left:auto}
   .tracklist .tr.active{color:var(--accent)}
   .tracklist .tr.active .trcover{box-shadow:inset 0 0 0 1px var(--accent),0 0 0 2px var(--accent)}
 </style>
@@ -322,10 +328,10 @@
     return `<div class="vph" data-bg="${bg}" style="background:${bg}"></div>`;}).join('');
 
   const TRACKS=[
-    {t:'Over My Dead Body',a:'Drake',d:'4:32',src:'music/over-my-dead-body.mp3'},
-    {t:'By Design',a:'Kid Cudi',d:'4:17',src:'music/by-design.mp3'},
-    {t:'Why',a:'Carly Simon',d:'4:08',src:'music/why.mp3'},
-    {t:'Paradise',a:'Sade',d:'4:02',src:'music/paradise.mp3'},
+    {t:'Over My Dead Body',a:'Drake',d:'4:32',src:'music/over-my-dead-body.mp3',cover:'music/cover-over-my-dead-body.jpg'},
+    {t:'By Design',a:'Kid Cudi',d:'4:17',src:'music/by-design.mp3',cover:'music/cover-by-design.jpg'},
+    {t:'Why',a:'Carly Simon',d:'4:08',src:'music/why.mp3',cover:'music/cover-why.jpg'},
+    {t:'Paradise',a:'Sade',d:'4:02',src:'music/paradise.mp3',cover:'music/cover-paradise.jpg'},
   ];
 
   const lockers={
@@ -354,17 +360,17 @@
          <p>Designing and shipping full-stack applications end to end — frontend interfaces, backend services, and the tooling that ties them together.</p>
        </div>`},
     photos:{num:'03',label:'Photos',file:'photos.app',html:
-      `<div class="vsco-head"><span>@reza6iix · VSCO</span><a href="https://vsco.co/reza6iix/gallery" target="_blank" rel="noopener">open gallery ↗</a></div>
-       <div class="vgrid">${photoTiles}</div>
-       <div class="photonote">// shot around toronto · tap to expand</div>`},
+      `<div class="vwrap"><div class="vsco-head"><span>@reza6iix · VSCO</span><a href="https://vsco.co/reza6iix/gallery" target="_blank" rel="noopener">open gallery ↗</a></div>
+       <div class="vgrid">${photoTiles}</div></div>`},
     spotify:{num:'04',label:'Spotify',file:'now-playing',html:
       `<h2>On repeat</h2><div class="role">What&rsquo;s in my ears while I build</div>
-       <div class="player" id="player"><div class="art"></div>
+       <div class="player" id="player"><div class="art" id="np-art" style="background-image:url('${TRACKS[0].cover}')"></div>
         <div class="pinfo"><div class="t" id="np-t">${TRACKS[0].t}</div><div class="a" id="np-a">${TRACKS[0].a}</div>
-          <div class="progress"><div class="fill" id="np-fill"></div></div>
-          <div class="pcontrols"><button class="play" id="np-play">▶</button><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div></div></div>
-       <div class="tracklist" id="tracklist">${TRACKS.map((t,i)=>`<div class="tr" data-i="${i}" data-t="${t.t}" data-a="${t.a}"><span>${i+1}. ${t.t} — ${t.a}</span><span class="dur">${t.d}</span></div>`).join('')}</div>
-       <div class="links" style="margin-top:14px"><a href="https://open.spotify.com/user/pinkjafari" target="_blank" rel="noopener"><span class="lleft">${BRAND.spotify} Spotify</span><span class="lright">@pinkjafari ↗</span></a></div>`},
+          <div class="scrub" id="np-scrub"><div class="fill" id="np-fill"></div><div class="knob" id="np-knob"></div><div class="scrub-tip" id="np-tip"></div></div>
+          <div class="times"><span id="np-cur">0:00</span><span id="np-dur">${TRACKS[0].d}</span></div>
+          <div class="pcontrols"><button class="play" id="np-play">▶</button><div class="eq"><i></i><i></i><i></i><i></i><i></i></div><button class="mute" id="np-mute" aria-label="Mute" title="Mute"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg></button></div></div></div>
+       <div class="tracklist" id="tracklist">${TRACKS.map((t,i)=>`<div class="tr" data-i="${i}" data-t="${t.t}" data-a="${t.a}"><span class="trl"><span class="trcover" style="background-image:url('${t.cover}')"></span>${i+1}. ${t.t} — ${t.a}</span><span class="dur">${t.d}</span></div>`).join('')}</div>
+       <div class="links" style="margin-top:14px"><a href="https://open.spotify.com/user/pinkjafari" target="_blank" rel="noopener"><span class="lleft">${BRAND.spotify} Spotify</span><span class="lright">reza6ix ↗</span></a></div>`},
     links:{num:'05',label:'Links',file:'links.app',html:
       `<h2>Links</h2><div class="role">Find me around</div>
        <div class="links">
@@ -424,22 +430,49 @@
     lbimg.style.background=p.dataset.bg;lbimg.style.backgroundSize='cover';lbimg.style.backgroundPosition='center';lb.classList.add('show');});});}
   lb.addEventListener('click',()=>lb.classList.remove('show'));
   let playing=false,timer=null,prog=32;
-  const audioEl=document.getElementById('audioEl');let curTrack=-1;
+  const audioEl=document.getElementById('audioEl');let curTrack=-1,dragState=null;
+  const fmt=s=>{s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');};
   function loadTrack(i,autoplay){curTrack=i;const tr=TRACKS[i];if(!tr.src)return;
     audioEl.src=tr.src;
-    const tEl=document.getElementById('np-t'),aEl=document.getElementById('np-a');
+    const tEl=document.getElementById('np-t'),aEl=document.getElementById('np-a'),art=document.getElementById('np-art');
     if(tEl)tEl.textContent=tr.t;if(aEl)aEl.textContent=tr.a;
+    if(art&&tr.cover)art.style.backgroundImage=`url('${tr.cover}')`;
+    const durEl=document.getElementById('np-dur'),curEl=document.getElementById('np-cur');
+    if(durEl)durEl.textContent=tr.d;if(curEl)curEl.textContent='0:00';
     document.querySelectorAll('.tracklist .tr').forEach(r=>r.classList.toggle('active',+r.dataset.i===i));
     if(autoplay)audioEl.play().catch(()=>{});}
-  function initSpotify(){const player=document.getElementById('player'),playBtn=document.getElementById('np-play'),fill=document.getElementById('np-fill');
+  function initSpotify(){const player=document.getElementById('player'),playBtn=document.getElementById('np-play'),fill=document.getElementById('np-fill'),
+      scrub=document.getElementById('np-scrub'),knob=document.getElementById('np-knob'),tip=document.getElementById('np-tip'),
+      curEl=document.getElementById('np-cur'),durEl=document.getElementById('np-dur');
     playBtn.addEventListener('click',()=>{if(curTrack<0)loadTrack(0,false);
       if(audioEl.paused)audioEl.play().catch(()=>{});else audioEl.pause();});
+    const muteBtn=document.getElementById('np-mute');
+    const ICON_ON='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a9 9 0 0 1 0 14"/></svg>';
+    const ICON_OFF='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor" stroke="none"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+    const paintMute=()=>{muteBtn.innerHTML=audioEl.muted?ICON_OFF:ICON_ON;muteBtn.title=audioEl.muted?'Unmute':'Mute';muteBtn.classList.toggle('muted',audioEl.muted);};
+    muteBtn.addEventListener('click',()=>{audioEl.muted=!audioEl.muted;paintMute();});
+    paintMute();
     wbody.querySelectorAll('.tracklist .tr').forEach(tr=>{tr.addEventListener('click',()=>loadTrack(+tr.dataset.i,true));});
     const sync=()=>{playing=!audioEl.paused;player.classList.toggle('playing',playing);playBtn.textContent=playing?'❚❚':'▶';};
     audioEl.onplay=sync;audioEl.onpause=sync;
-    audioEl.ontimeupdate=()=>{if(audioEl.duration)fill.style.width=(audioEl.currentTime/audioEl.duration*100)+'%';};
+    const paint=()=>{if(audioEl.duration){const p=audioEl.currentTime/audioEl.duration;fill.style.width=(p*100)+'%';knob.style.left=(p*100)+'%';
+      if(curEl)curEl.textContent=fmt(audioEl.currentTime);}};
+    audioEl.ontimeupdate=paint;
+    audioEl.onloadedmetadata=()=>{if(durEl&&isFinite(audioEl.duration))durEl.textContent=fmt(audioEl.duration);paint();};
     audioEl.onended=()=>loadTrack((curTrack+1)%TRACKS.length,true);
-    if(curTrack>=0)document.querySelectorAll('.tracklist .tr').forEach(r=>r.classList.toggle('active',+r.dataset.i===curTrack));}
+    // seek bar: hover preview + click/drag to seek
+    const ratioAt=e=>{const r=scrub.getBoundingClientRect();const x=((e.touches?e.touches[0].clientX:e.clientX)-r.left)/r.width;return Math.min(1,Math.max(0,x));};
+    const showTip=e=>{if(!audioEl.duration)return;const ratio=ratioAt(e);tip.style.left=(ratio*100)+'%';tip.textContent=fmt(ratio*audioEl.duration);};
+    const seekTo=e=>{if(!audioEl.duration)return;audioEl.currentTime=ratioAt(e)*audioEl.duration;paint();};
+    scrub.addEventListener('mousemove',showTip);
+    scrub.addEventListener('mousedown',e=>{if(curTrack<0)loadTrack(0,false);dragState={scrub,seekTo,showTip};scrub.classList.add('dragging');seekTo(e);});
+    if(!window._scrubWired){window._scrubWired=true;
+      window.addEventListener('mousemove',e=>{if(dragState){dragState.seekTo(e);dragState.showTip(e);}});
+      window.addEventListener('mouseup',()=>{if(dragState){dragState.scrub.classList.remove('dragging');dragState=null;}});}
+    scrub.addEventListener('touchstart',e=>{if(curTrack<0)loadTrack(0,false);seekTo(e);},{passive:true});
+    scrub.addEventListener('touchmove',e=>{seekTo(e);},{passive:true});
+    if(curTrack>=0)document.querySelectorAll('.tracklist .tr').forEach(r=>r.classList.toggle('active',+r.dataset.i===curTrack));
+    paint();}
 
   function tick(){const parts=new Intl.DateTimeFormat('en-US',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false,timeZoneName:'short'}).formatToParts(new Date());
     const g=t=>{const p=parts.find(x=>x.type===t);return p?p.value:'';};
