@@ -322,9 +322,10 @@
     return `<div class="vph" data-bg="${bg}" style="background:${bg}"></div>`;}).join('');
 
   const TRACKS=[
-    {t:'— add your track —',a:'artist',d:'0:00'},
-    {t:'— add your track —',a:'artist',d:'0:00'},
-    {t:'— add your track —',a:'artist',d:'0:00'},
+    {t:'Over My Dead Body',a:'Drake',d:'4:32',src:'music/over-my-dead-body.mp3'},
+    {t:'By Design',a:'Kid Cudi',d:'4:17',src:'music/by-design.mp3'},
+    {t:'Why',a:'Carly Simon',d:'4:08',src:'music/why.mp3'},
+    {t:'Paradise',a:'Sade',d:'4:02',src:'music/paradise.mp3'},
   ];
 
   const lockers={
@@ -362,7 +363,7 @@
         <div class="pinfo"><div class="t" id="np-t">${TRACKS[0].t}</div><div class="a" id="np-a">${TRACKS[0].a}</div>
           <div class="progress"><div class="fill" id="np-fill"></div></div>
           <div class="pcontrols"><button class="play" id="np-play">▶</button><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div></div></div>
-       <div class="tracklist" id="tracklist">${TRACKS.map((t,i)=>`<div class="tr" data-t="${t.t}" data-a="${t.a}"><span>${i+1}. ${t.t} — ${t.a}</span><span class="dur">${t.d}</span></div>`).join('')}</div>
+       <div class="tracklist" id="tracklist">${TRACKS.map((t,i)=>`<div class="tr" data-i="${i}" data-t="${t.t}" data-a="${t.a}"><span>${i+1}. ${t.t} — ${t.a}</span><span class="dur">${t.d}</span></div>`).join('')}</div>
        <div class="links" style="margin-top:14px"><a href="https://open.spotify.com/user/pinkjafari" target="_blank" rel="noopener"><span class="lleft">${BRAND.spotify} Spotify</span><span class="lright">@pinkjafari ↗</span></a></div>`},
     links:{num:'05',label:'Links',file:'links.app',html:
       `<h2>Links</h2><div class="role">Find me around</div>
@@ -423,11 +424,22 @@
     lbimg.style.background=p.dataset.bg;lbimg.style.backgroundSize='cover';lbimg.style.backgroundPosition='center';lb.classList.add('show');});});}
   lb.addEventListener('click',()=>lb.classList.remove('show'));
   let playing=false,timer=null,prog=32;
+  const audioEl=document.getElementById('audioEl');let curTrack=-1;
+  function loadTrack(i,autoplay){curTrack=i;const tr=TRACKS[i];if(!tr.src)return;
+    audioEl.src=tr.src;
+    const tEl=document.getElementById('np-t'),aEl=document.getElementById('np-a');
+    if(tEl)tEl.textContent=tr.t;if(aEl)aEl.textContent=tr.a;
+    document.querySelectorAll('.tracklist .tr').forEach(r=>r.classList.toggle('active',+r.dataset.i===i));
+    if(autoplay)audioEl.play().catch(()=>{});}
   function initSpotify(){const player=document.getElementById('player'),playBtn=document.getElementById('np-play'),fill=document.getElementById('np-fill');
-    playBtn.addEventListener('click',()=>{playing=!playing;player.classList.toggle('playing',playing);playBtn.textContent=playing?'❚❚':'▶';
-      clearInterval(timer);if(playing){timer=setInterval(()=>{prog=(prog+1)%100;fill.style.width=prog+'%';},250);}});
-    wbody.querySelectorAll('.tracklist .tr').forEach(tr=>{tr.addEventListener('click',()=>{
-      document.getElementById('np-t').textContent=tr.dataset.t;document.getElementById('np-a').textContent=tr.dataset.a;if(!playing) playBtn.click();});});}
+    playBtn.addEventListener('click',()=>{if(curTrack<0)loadTrack(0,false);
+      if(audioEl.paused)audioEl.play().catch(()=>{});else audioEl.pause();});
+    wbody.querySelectorAll('.tracklist .tr').forEach(tr=>{tr.addEventListener('click',()=>loadTrack(+tr.dataset.i,true));});
+    const sync=()=>{playing=!audioEl.paused;player.classList.toggle('playing',playing);playBtn.textContent=playing?'❚❚':'▶';};
+    audioEl.onplay=sync;audioEl.onpause=sync;
+    audioEl.ontimeupdate=()=>{if(audioEl.duration)fill.style.width=(audioEl.currentTime/audioEl.duration*100)+'%';};
+    audioEl.onended=()=>loadTrack((curTrack+1)%TRACKS.length,true);
+    if(curTrack>=0)document.querySelectorAll('.tracklist .tr').forEach(r=>r.classList.toggle('active',+r.dataset.i===curTrack));}
 
   function tick(){const parts=new Intl.DateTimeFormat('en-US',{weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:false,timeZoneName:'short'}).formatToParts(new Date());
     const g=t=>{const p=parts.find(x=>x.type===t);return p?p.value:'';};
