@@ -78,11 +78,37 @@
   .paging .pdot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--amber);box-shadow:0 0 7px var(--amber);animation:blink 1.4s infinite}
   @media(max-width:760px){.paging{display:none}}
 
-  .wrap{max-width:1000px;margin:0 auto;padding:60px 24px 130px;position:relative;z-index:2}
-  header{margin-bottom:34px}
+  .wrap{max-width:1000px;margin:0 auto;padding:42px 24px 130px;position:relative;z-index:2}
+  header{margin-bottom:34px;position:relative}
   .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:16px}
   header h1{font-size:clamp(32px,6vw,54px);font-weight:800;letter-spacing:-.025em;line-height:1.0}
   header .sub{margin-top:14px;color:var(--ink-soft);font-size:16px;max-width:54ch}
+
+  /* ——— tiny airplane landing/takeoff scene ——— */
+  .sky{position:absolute;top:0;right:0;width:172px;height:64px;border-radius:12px;overflow:hidden;
+    background:linear-gradient(180deg,#bfe0ff,#eaf4ff);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06),0 10px 24px -12px rgba(0,0,0,.35)}
+  [data-theme="dark"] .sky{background:linear-gradient(180deg,#0e1a36,#1b2c50)}
+  .sky .sun{position:absolute;top:9px;right:18px;width:15px;height:15px;border-radius:50%;background:#ffd27a;box-shadow:0 0 12px #ffce6e}
+  [data-theme="dark"] .sky .sun{background:#e6ecff;box-shadow:0 0 10px #cdd9ff}
+  .sky .cloud{position:absolute;height:6px;border-radius:6px;background:rgba(255,255,255,.85)}
+  [data-theme="dark"] .sky .cloud{background:rgba(255,255,255,.16)}
+  .sky .cloud.c1{width:26px;top:15px;left:-30px;animation:drift 9s linear infinite}
+  .sky .cloud.c2{width:18px;top:30px;left:-22px;animation:drift 7s linear infinite 2s}
+  @keyframes drift{0%{transform:translateX(0)}100%{transform:translateX(214px)}}
+  .sky .runway{position:absolute;left:10px;right:10px;bottom:11px;height:2px;border-radius:2px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 7px,transparent 7px 15px)}
+  [data-theme="dark"] .sky .runway{background:repeating-linear-gradient(90deg,rgba(255,255,255,.32) 0 7px,transparent 7px 15px)}
+  .sky .plane{position:absolute;left:0;bottom:13px;color:#28406a;animation:flight 6.5s cubic-bezier(.45,0,.55,1) infinite}
+  [data-theme="dark"] .sky .plane{color:#dfe9ff}
+  .sky .plane svg{display:block;width:26px;height:13px;fill:currentColor;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+  @keyframes flight{
+    0%{transform:translate(2px,-36px) rotate(13deg);opacity:0}
+    9%{opacity:1}
+    34%{transform:translate(56px,0) rotate(0deg)}
+    52%{transform:translate(102px,0) rotate(0deg)}
+    78%{transform:translate(148px,-30px) rotate(-15deg);opacity:1}
+    100%{transform:translate(182px,-52px) rotate(-17deg);opacity:0}
+  }
+  @media(max-width:560px){.sky{display:none}}
 
   /* ——— SPLIT-FLAP CELLS ——— */
   .flap{display:inline-flex;gap:3px;vertical-align:middle}
@@ -123,6 +149,10 @@
   .fstatus.final{color:var(--red)}.fstatus.final .dot{background:var(--red);animation:blink 1s infinite}
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
   .board-foot{padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:#5f646c;border-top:1px solid var(--board-line);display:flex;justify-content:space-between}
+  .bh-right{display:flex;align-items:center;gap:12px}
+  .board-toggle{background:#1d222b;border:1px solid #2c333d;color:#c9ced6;box-shadow:none}
+  .board-toggle:hover{color:#fff;border-color:#3a424d}
+  @media(max-width:560px){.board-head #clock{display:none}}
 
   @media(max-width:640px){
     .board-cols{display:none}
@@ -261,27 +291,22 @@
 </style>
 </head>
 <body>
-  <div class="menubar">
-    <div class="left">
-      <span class="brand"><span class="pin">✈</span> REZA AIR</span>
-      <a class="paging" id="paging" href="mailto:reza@pulzivo.dev" title="Page the gate agent">
-        <span class="pdot"></span>PAGING REZA · <b>reza@pulzivo.dev</b>
-      </a>
-      <span class="clock" id="clock"></span>
-    </div>
-    <button class="theme-btn" id="theme"><span class="shade"></span> RED-EYE</button>
-  </div>
-
   <div class="wrap">
     <header>
+      <div class="sky" aria-hidden="true">
+        <span class="sun"></span>
+        <span class="cloud c1"></span><span class="cloud c2"></span>
+        <span class="runway"></span>
+        <span class="plane"><svg viewBox="0 0 40 20"><path d="M3 11.5 L29 9.2 Q36.5 9 36.5 11 Q36.5 12.6 29 12.4 L9 13.2 Z"/><path d="M13 10.5 L19 3.5 L21.5 3.5 L18 10.6 Z"/><path d="M15.5 11.4 L23 16.5 L25 16.5 L20.5 11.2 Z"/></svg></span>
+      </div>
       <div class="eyebrow">YYZ · Founder · Software Engineer · Toronto</div>
       <h1>Reza Moghaddas Jafari</h1>
       <div class="flap hero" id="flap"></div>
-      <div class="sub">Founder of Pulzivo, building with Opus 4.8. Pick a destination — every gate opens a window.</div>
+      <div class="sub">Founder of Pulzivo, building with Opus 4.8. Pick a destination. Every gate opens a window.</div>
     </header>
 
     <div class="board">
-      <div class="board-head"><span>✈ DEPARTURES</span><span class="r" id="board-clock">YYZ · ON TIME</span></div>
+      <div class="board-head"><span>✈ DEPARTURES</span><span class="bh-right"><span class="r" id="clock">YYZ</span><button class="theme-btn board-toggle" id="theme"><span class="shade"></span> RED-EYE</button></span></div>
       <div class="board-cols"><span>FLIGHT</span><span>DESTINATION</span><span>GATE</span><span>STATUS</span><span></span></div>
       <div id="bank"></div>
       <div class="board-foot"><span>BOARDING ALL ZONES</span><span>TERMINAL 6IX</span></div>
