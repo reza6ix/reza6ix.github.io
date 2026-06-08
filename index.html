@@ -84,31 +84,21 @@
   header h1{font-size:clamp(32px,6vw,54px);font-weight:800;letter-spacing:-.025em;line-height:1.0}
   header .sub{margin-top:14px;color:var(--ink-soft);font-size:16px;max-width:54ch}
 
-  /* ——— tiny airplane landing/takeoff scene ——— */
-  .sky{position:absolute;top:0;right:0;width:172px;height:64px;border-radius:12px;overflow:hidden;
-    background:linear-gradient(180deg,#bfe0ff,#eaf4ff);box-shadow:inset 0 0 0 1px rgba(0,0,0,.06),0 10px 24px -12px rgba(0,0,0,.35)}
-  [data-theme="dark"] .sky{background:linear-gradient(180deg,#0e1a36,#1b2c50)}
-  .sky .sun{position:absolute;top:9px;right:18px;width:15px;height:15px;border-radius:50%;background:#ffd27a;box-shadow:0 0 12px #ffce6e}
-  [data-theme="dark"] .sky .sun{background:#e6ecff;box-shadow:0 0 10px #cdd9ff}
-  .sky .cloud{position:absolute;height:6px;border-radius:6px;background:rgba(255,255,255,.85)}
-  [data-theme="dark"] .sky .cloud{background:rgba(255,255,255,.16)}
-  .sky .cloud.c1{width:26px;top:15px;left:-30px;animation:drift 9s linear infinite}
-  .sky .cloud.c2{width:18px;top:30px;left:-22px;animation:drift 7s linear infinite 2s}
-  @keyframes drift{0%{transform:translateX(0)}100%{transform:translateX(214px)}}
-  .sky .runway{position:absolute;left:10px;right:10px;bottom:11px;height:2px;border-radius:2px;background:repeating-linear-gradient(90deg,rgba(0,0,0,.28) 0 7px,transparent 7px 15px)}
-  [data-theme="dark"] .sky .runway{background:repeating-linear-gradient(90deg,rgba(255,255,255,.32) 0 7px,transparent 7px 15px)}
-  .sky .plane{position:absolute;left:0;bottom:13px;color:#28406a;animation:flight 6.5s cubic-bezier(.45,0,.55,1) infinite}
-  [data-theme="dark"] .sky .plane{color:#dfe9ff}
-  .sky .plane svg{display:block;width:26px;height:13px;fill:currentColor;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+  /* ——— jet fly-by (no background, just the plane + vapor trail) ——— */
+  .sky{position:absolute;top:-4px;right:0;width:208px;height:78px;overflow:visible;pointer-events:none}
+  .sky .plane{position:absolute;left:0;bottom:24px;color:var(--accent);animation:flight 5.6s cubic-bezier(.45,.05,.5,.95) infinite}
+  .sky .plane svg{display:block;width:30px;height:30px;fill:currentColor;filter:drop-shadow(0 2px 5px rgba(0,0,0,.3))}
+  .sky .trail{position:absolute;right:88%;top:50%;width:66px;height:3px;transform:translateY(-50%);border-radius:3px;
+    background:linear-gradient(270deg,currentColor,transparent);opacity:.45}
   @keyframes flight{
-    0%{transform:translate(2px,-36px) rotate(13deg);opacity:0}
-    9%{opacity:1}
-    34%{transform:translate(56px,0) rotate(0deg)}
-    52%{transform:translate(102px,0) rotate(0deg)}
-    78%{transform:translate(148px,-30px) rotate(-15deg);opacity:1}
-    100%{transform:translate(182px,-52px) rotate(-17deg);opacity:0}
+    0%{transform:translate(-46px,34px) rotate(-16deg);opacity:0}
+    14%{opacity:1}
+    50%{transform:translate(86px,4px) rotate(-11deg)}
+    86%{opacity:1}
+    100%{transform:translate(220px,-34px) rotate(-20deg);opacity:0}
   }
   @media(max-width:560px){.sky{display:none}}
+  @media(prefers-reduced-motion:reduce){.sky .plane{animation:none;transform:translate(86px,4px) rotate(-11deg)}}
 
   /* ——— SPLIT-FLAP CELLS ——— */
   .flap{display:inline-flex;gap:3px;vertical-align:middle}
@@ -168,11 +158,16 @@
 
   .lk-interior{position:absolute;inset:0;border-radius:13px;overflow:hidden;background:var(--paper);
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),0 50px 110px -34px rgba(0,0,0,.65)}
-  .tkt-top{position:absolute;top:0;left:0;right:0;height:40px;display:flex;justify-content:space-between;align-items:center;
+  .tkt-top{position:absolute;top:0;left:0;right:0;height:48px;display:flex;justify-content:space-between;align-items:center;
     padding:0 18px;background:linear-gradient(180deg,#33507a,var(--navy));color:#fff;z-index:2;
-    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em}
-  .tkt-top .l{display:flex;align-items:center;gap:8px}
-  .lk .wbody{position:absolute;inset:40px 0 0 0;overflow:auto;padding:24px 24px 30px;opacity:0;transition:opacity .4s .3s}
+    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.1em;overflow:hidden}
+  .tkt-top .rt{display:flex;align-items:center;gap:10px;font-weight:700}
+  .tkt-top .rt b{color:#fff;font-weight:700}
+  .tkt-top .path{position:relative;width:84px;height:14px;border-bottom:1.5px dotted rgba(255,255,255,.55)}
+  .tkt-top .pl{position:absolute;left:0;top:-3px;font-style:normal;font-size:12px;animation:taxi 1.5s cubic-bezier(.4,0,.4,1) .25s forwards}
+  @keyframes taxi{0%{left:0;opacity:0}15%{opacity:1}100%{left:calc(100% - 11px);opacity:1}}
+  .tkt-top .rtmeta{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.72)}
+  .lk .wbody{position:absolute;inset:48px 0 0 0;overflow:auto;padding:24px 24px 30px;opacity:0;transition:opacity .4s .3s}
   .lk.open .wbody{opacity:1}
 
   /* the door = a boarding pass that tears upward on open */
@@ -294,12 +289,9 @@
   <div class="wrap">
     <header>
       <div class="sky" aria-hidden="true">
-        <span class="sun"></span>
-        <span class="cloud c1"></span><span class="cloud c2"></span>
-        <span class="runway"></span>
-        <span class="plane"><svg viewBox="0 0 40 20"><path d="M3 11.5 L29 9.2 Q36.5 9 36.5 11 Q36.5 12.6 29 12.4 L9 13.2 Z"/><path d="M13 10.5 L19 3.5 L21.5 3.5 L18 10.6 Z"/><path d="M15.5 11.4 L23 16.5 L25 16.5 L20.5 11.2 Z"/></svg></span>
+        <span class="plane"><span class="trail"></span><svg viewBox="0 0 24 24"><path d="M22 12 L13 13 L8 20 L6 20 L8.5 12.6 L4 13 L2.5 15 L1.5 15 L2.2 12 L1.5 9 L2.5 9 L4 11 L8.5 11.4 L6 4 L8 4 L13 11 Z"/></svg></span>
       </div>
-      <div class="eyebrow">YYZ · Founder · Software Engineer · Toronto</div>
+      <div class="eyebrow">YYZ · Founder · Software Engineer</div>
       <h1>Reza Moghaddas Jafari</h1>
       <div class="flap hero" id="flap"></div>
       <div class="sub">Founder of Pulzivo, building with Opus 4.8. Pick a destination. Every gate opens a window.</div>
@@ -371,7 +363,9 @@
        <div class="sec"><h4>stack</h4><div class="tags"><span>Twilio</span><span>Calendar OAuth</span><span>Railway</span><span>Postgres</span></div></div>
        <div class="sec"><h4>follow</h4><div class="links"><a href="https://instagram.com/pulzivo" target="_blank" rel="noopener"><span class="lleft">${BRAND.instagram} Instagram</span><span class="lright">@pulzivo ↗</span></a></div></div>`},
     about:{label:'About',code:'AB 02',gate:'G2',status:'ON TIME',stype:'ontime',html:
-      `<h2>About</h2><p>I&rsquo;m one of the passionate few.</p>`},
+      `<h2>About</h2><div class="role">Founder &amp; Software Engineer focused on building scalable, multi-tenant AI platforms.</div>
+       <div class="sec"><p>I currently lead architecture and development at Pulzivo, an AI startup designed to automate operational workflows for home service businesses. My technical focus spans backend infrastructure, cross-tenant security, and API cost optimization, approaching data routing with the precision of air traffic control to ensure resilient LLM workflows in production.</p></div>
+       <div class="sec"><p>I enjoy working on problems where engineering fundamentals matter and ownership is absolute. I&rsquo;m focused on building robust systems that leverage technical superiority to eliminate manual bottlenecks and deliver true operational autonomy.</p></div>`},
     experience:{label:'Experience',code:'EX 03',gate:'G3',status:'ON TIME',stype:'ontime',html:
       `<h2>Experience</h2><div class="role">Where I&rsquo;ve been, what I&rsquo;ve done, and proof I don&rsquo;t just make side projects all day.</div>
        <div class="role-card">
@@ -484,7 +478,9 @@
   function close(){lk.classList.remove('open');setTimeout(()=>overlay.classList.remove('show'),340);}
   function openWin(key){const l=sections[key];
     lkdoor.innerHTML=passHTML(key,l);
-    tkttop.innerHTML=`<span class="l">✈ ${l.label.toUpperCase()}</span><span>${l.code} · GATE ${l.gate}</span>`;
+    const dest3=l.label.slice(0,3).toUpperCase();
+    tkttop.innerHTML=`<span class="rt"><b>YYZ</b><span class="path"><i class="pl">✈</i></span><b>${dest3}</b></span>`+
+      `<span class="rtmeta">${l.code} · GATE ${l.gate} · 6IX</span>`;
     wbody.innerHTML=l.html;wbody.scrollTop=0;
     lk.classList.remove('open');overlay.classList.add('show');
     if(key==='photos')initPhotos();if(key==='spotify')initSpotify();
