@@ -167,9 +167,6 @@
     .fstatus{font-size:0}                 /* hide long status text, keep the colour dot */
     .fstatus .dot{margin-right:0}
     .fcode{font-size:11px}
-    .bp-grid{padding:18px 16px;gap:12px}
-    .bp-mini{gap:14px}.bp-f b{font-size:16px}
-    .bp-ic{width:60px}.bp-ic svg{width:44px;height:44px}
     .lk .wbody{padding:22px 18px 26px}
     .tkt-top .path{width:64px}
   }
@@ -177,12 +174,12 @@
   /* ——— BOARDING-PASS OPEN ——— */
   .overlay{position:fixed;inset:0;z-index:50;background:rgba(10,10,12,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s}
   .overlay.show{opacity:1;pointer-events:auto}
-  /* the whole pass eases in (fade + slight rise/scale) instead of popping, and eases out on close */
+  /* the window eases in (fade + slight rise/scale) and eases out on close */
   .lk{position:absolute;top:50%;left:50%;width:min(440px,92vw);height:min(644px,85vh);
-    opacity:0;transform:translate(-50%,-46%) scale(.94);
-    transition:opacity .22s ease,transform .26s cubic-bezier(.4,0,1,1);will-change:transform,opacity}
+    opacity:0;transform:translate(-50%,-46%) scale(.96);
+    transition:opacity .18s ease,transform .2s ease;will-change:transform,opacity}
   .overlay.show .lk{opacity:1;transform:translate(-50%,-50%) scale(1);
-    transition:opacity .38s ease,transform .5s cubic-bezier(.16,1,.3,1)}
+    transition:opacity .26s ease,transform .38s cubic-bezier(.16,1,.3,1)}
 
   .lk-interior{position:absolute;inset:0;border-radius:13px;overflow:hidden;background:var(--paper);
     box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),0 50px 110px -34px rgba(0,0,0,.65)}
@@ -195,41 +192,9 @@
   .tkt-top .pl{position:absolute;left:0;top:-3px;font-style:normal;font-size:12px;animation:taxi 1.5s cubic-bezier(.4,0,.4,1) .25s forwards}
   @keyframes taxi{0%{left:0;opacity:0}15%{opacity:1}100%{left:calc(100% - 11px);opacity:1}}
   .tkt-top .rtmeta{font-size:10px;letter-spacing:.08em;color:rgba(255,255,255,.72)}
-  .lk .wbody{position:absolute;inset:48px 0 0 0;overflow:auto;padding:24px 24px 30px;opacity:0;transition:opacity .5s .3s ease}
-  .lk.open .wbody{opacity:1}
-  .lk.noanim .lk-door,.lk.noanim .wbody{transition:none} /* snap back to the closed pose while hidden */
+  .lk .wbody{position:absolute;inset:48px 0 0 0;overflow:auto;padding:24px 24px 30px}
 
-  /* the door = a boarding pass that tears upward on open */
-  .lk-door{position:absolute;inset:0;border-radius:13px;overflow:hidden;cursor:pointer;z-index:3;
-    display:flex;flex-direction:column;background:linear-gradient(180deg,#ffffff,#eef1f5);
-    box-shadow:0 24px 60px -18px rgba(0,0,0,.6);
-    transition:transform .85s cubic-bezier(.5,0,.18,1),opacity .45s ease .32s}
-  .lk.open .lk-door{transform:translateY(-116%) rotate(-2deg) scale(.98);opacity:0;pointer-events:none}
-  @media(prefers-reduced-motion:reduce){.lk,.overlay.show .lk,.lk-door,.lk .wbody{transition-duration:.01s!important;transition-delay:0s!important}}
-  .bp{display:flex;flex-direction:column;height:100%;color:#1a1916}
-  .bp-strip{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;
-    background:linear-gradient(180deg,#33507a,#223a5c);color:#fff;
-    font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;letter-spacing:.16em}
-  .bp-strip .air{display:flex;align-items:center;gap:8px}
-  .bp-grid{flex:1;display:flex;gap:16px;padding:22px 20px;align-items:stretch}
-  .bp-bar{width:30px;flex:none;align-self:stretch;border-radius:2px;opacity:.88;
-    background:repeating-linear-gradient(90deg,#1a1916 0 2px,transparent 2px 3px,#1a1916 3px 5px,transparent 5px 7px,#1a1916 7px 8px,transparent 8px 11px)}
-  .bp-fields{flex:1;display:flex;flex-direction:column;gap:18px;justify-content:center}
-  .bp-f label{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;color:#9a958b;margin-bottom:4px}
-  .bp-f b{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:#1a1916}
-  .bp-mini{display:flex;gap:22px}
-  .bp-ic{width:78px;flex:none;display:flex;align-items:center;justify-content:flex-end}
-  .bp-ic svg{width:56px;height:56px;stroke:#2c466b;stroke-width:1.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
-  .bp.featured .bp-ic svg{stroke:#2c466b}
-  .bp-foot{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;
-    background:#eef1f5;border-top:2px dashed #d3d9e0}
-  .bp-status{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;letter-spacing:.04em}
-  .bp-status.boarding{color:#bd8410}.bp-status.ontime{color:#3e9b57}.bp-status.info{color:#3a6fb0}.bp-status.final{color:#c8434c}
-  .bp-tap{font-family:'JetBrains Mono',monospace;font-size:11px;color:#9a958b}
-  /* perforation notches on the tear strip */
-  .bp-foot::before,.bp-foot::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:rgba(10,10,12,.55);margin-top:-9px}
-  .bp-foot{position:relative}
-  .bp-foot::before{left:-9px}.bp-foot::after{right:-9px}
+  @media(prefers-reduced-motion:reduce){.lk,.overlay.show .lk{transition-duration:.01s!important}}
 
   .lk-close{position:absolute;top:-14px;right:-14px;z-index:6;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;color:var(--ink);
     border:1px solid var(--line);background:linear-gradient(180deg,var(--metal-1),var(--metal-2));
@@ -317,7 +282,6 @@
         <div class="tkt-top" id="tkttop"></div>
         <div class="wbody" id="wbody"></div>
       </div>
-      <div class="lk-door" id="lkdoor"></div>
       <button class="lk-close" id="close" aria-label="Close">&times;</button>
     </div>
   </div>
@@ -327,17 +291,6 @@
   const G={range:'linear-gradient(135deg,#8a8276,#3f3a33)',push:'linear-gradient(135deg,#6e7479,#2c3035)',
     toronto:'linear-gradient(135deg,#9a8f7d,#4a4438)',build:'linear-gradient(135deg,#5d6166,#202327)',
     prayer:'linear-gradient(135deg,#857c6d,#3a352d)',coffee:'linear-gradient(135deg,#7a6a55,#332b22)'};
-
-  const ICON={
-    granvy:'<path d="M6 8l4 4-4 4"/><path d="M13 16h6"/>',
-    about:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3.5-5.5 7-5.5s7 2 7 5.5"/>',
-    experience:'<rect x="3" y="8" width="18" height="12" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
-    thoughts:'<path d="M4 5h16a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-8l-5 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="M8 10h8"/><path d="M8 13h5"/>',
-    photos:'<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="M4 18l5-4 4 3 4-4 3 3"/>',
-    spotify:'<circle cx="12" cy="12" r="9.2"/><path d="M7.4 9.4c3.1-.9 7.1-.4 9.8 1.5"/><path d="M7.8 12.5c2.6-.7 6-.3 8.2 1.2"/><path d="M8.2 15.4c2-.5 4.6-.2 6.4 1"/>',
-    links:'<path d="M10 14a4 4 0 0 1 0-6l1.5-1.5a4 4 0 0 1 6 6L16 14"/><path d="M14 10a4 4 0 0 1 0 6l-1.5 1.5a4 4 0 0 1-6-6L8 10"/>',
-    tools:'<path d="M9 8l-4 4 4 4"/><path d="M15 8l4 4-4 4"/>',
-    contact:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/>'};
 
   const BRAND={
     github:'<svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.5 11.5 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222 0 1.606-.014 2.898-.014 3.293 0 .322.216.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
@@ -467,44 +420,16 @@
   });
   document.querySelectorAll('.frow .flap').forEach((el,i)=>{setTimeout(()=>splitFlap(el,el.dataset.text),250+i*150);});
 
-  /* ——— boarding-pass door ——— */
-  function passHTML(key,l){
-    return `<div class="bp ${l.featured?'featured':''}">
-      <div class="bp-strip"><span class="air">✈ REZA AIR</span><span>BOARDING PASS</span></div>
-      <div class="bp-grid">
-        <div class="bp-bar"></div>
-        <div class="bp-fields">
-          <div class="bp-f"><label>PASSENGER</label><b>R. M. JAFARI</b></div>
-          <div class="bp-f"><label>DESTINATION</label><b>${l.label.toUpperCase()}</b></div>
-          <div class="bp-mini">
-            <div class="bp-f"><label>FLIGHT</label><b>${l.code}</b></div>
-            <div class="bp-f"><label>GATE</label><b>${l.gate}</b></div>
-            <div class="bp-f"><label>SEAT</label><b>6IX</b></div>
-          </div>
-        </div>
-        <div class="bp-ic"><svg viewBox="0 0 24 24">${ICON[key]}</svg></div>
-      </div>
-      <div class="bp-foot"><span class="bp-status ${l.stype}">${l.status}</span><span class="bp-tap">tap to board ↗</span></div>
-    </div>`;
-  }
-
   const overlay=document.getElementById('overlay'),lk=document.getElementById('lk'),
-        lkdoor=document.getElementById('lkdoor'),wbody=document.getElementById('wbody'),tkttop=document.getElementById('tkttop');
-  let tearTimer;
-  /* close = just fade the whole pass out; it is reset to the closed pose (unseen) on the next open */
-  function close(){clearTimeout(tearTimer);overlay.classList.remove('show');}
+        wbody=document.getElementById('wbody'),tkttop=document.getElementById('tkttop');
+  function close(){overlay.classList.remove('show');}
   function openWin(key){const l=sections[key];
-    lkdoor.innerHTML=passHTML(key,l);
     const dest3=l.label.slice(0,3).toUpperCase();
     tkttop.innerHTML=`<span class="rt"><b>YYZ</b><span class="path"><i class="pl">✈</i></span><b>${dest3}</b></span>`+
       `<span class="rtmeta">${l.code} · GATE ${l.gate} · 6IX</span>`;
     wbody.innerHTML=l.html;wbody.scrollTop=0;
-    clearTimeout(tearTimer);
-    lk.classList.add('noanim');lk.classList.remove('open');void lk.offsetWidth;lk.classList.remove('noanim');
     overlay.classList.add('show');
-    if(key==='photos')initPhotos();
-    tearTimer=setTimeout(()=>lk.classList.add('open'),460);}
-  lkdoor.addEventListener('click',()=>lk.classList.add('open'));
+    if(key==='photos')initPhotos();}
   document.getElementById('close').addEventListener('click',close);
   overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){lb.classList.remove('show');close();}});
